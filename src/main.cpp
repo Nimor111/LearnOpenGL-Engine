@@ -2,6 +2,10 @@
 
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "../include/Shader.h"
 #include "../include/Texture.h"
 #include "../include/Window.h"
@@ -16,6 +20,23 @@ void processInput(GLFWwindow* window, Shader shader);
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+
+void translateVector()
+{
+    // define vector to be translated
+    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
+
+    // define a 4x4 matrix, zero by default, make identity
+    glm::mat4 trans = glm::mat4(1.0f);
+
+    // define transformation matrix for translating with vector (1, 0, 1)
+    trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
+
+    // actual translation, multiplying matrices
+    vec = trans * vec;
+
+    std::cout << "(" << vec.x << ", " << vec.y << ", " << vec.z << ")" << std::endl;
+}
 
 int main()
 {
@@ -139,6 +160,16 @@ int main()
 
         awesomeFace.activateTextureUnit(GL_TEXTURE1);
         awesomeFace.bindTexture();
+
+        // transform
+        glm::mat4 trans = glm::mat4(1.0f);
+        /* trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f)); */
+        /* trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5)); */
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+
+        GLint transformLoc = glGetUniformLocation(ourShader.id, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
         glBindVertexArray(VAO);
         /* glDrawArrays(GL_TRIANGLES, 0, 3); */
