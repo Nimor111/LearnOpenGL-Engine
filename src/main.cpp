@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "../include/Context.h"
 #include "../include/Shader.h"
 #include "../include/Texture.h"
 #include "../include/Window.h"
@@ -68,13 +69,6 @@ int main()
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    /* float vertices[] = { */
-    /*     // positions         // colors */
-    /*     0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom right */
-    /*     -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left */
-    /*     0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f    // top */
-    /* }; */
-
     // rectangle
     // show texture wrapping options - 4 copies
     GLfloat vertices[] = {
@@ -84,15 +78,6 @@ int main()
         -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
         -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 2.0f   // top left
     };
-
-    // focus on a specific part of the texture
-    /* float vertices[] = { */
-    /*     // positions          // colors           // texture coords (note that we changed them to 'zoom in' on our texture image) */
-    /*      0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.55f, 0.55f, // top right */
-    /*      0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   0.55f, 0.45f, // bottom right */
-    /*     -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.45f, 0.45f, // bottom left */
-    /*     -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.45f, 0.55f  // top left */
-    /* }; */
 
     GLuint indices[] = {
         0, 1, 3, // first triangle
