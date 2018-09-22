@@ -64,7 +64,7 @@ int main()
 
     // build and compile our shader program
     // ------------------------------------
-    Shader ourShader("resources/triangle.vert", "resources/triangle.frag"); // you can name your shader files however you like
+    Shader ourShader("resources/shaders/triangle.vert", "resources/shaders/triangle.frag"); // you can name your shader files however you like
 
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
@@ -151,10 +151,10 @@ int main()
     /*glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); */
     /* glEnableVertexAttribArray(2); */
 
-    std::string containerPath = std::string("resources/container.jpg");
+    std::string containerPath = std::string("resources/images/container.jpg");
     Texture container = Texture(containerPath.c_str(), false, GL_REPEAT, GL_TEXTURE_2D);
 
-    std::string awesomeFacePath = std::string("resources/awesomeface.png");
+    std::string awesomeFacePath = std::string("resources/images/awesomeface.png");
     Texture awesomeFace = Texture(awesomeFacePath.c_str(), true, GL_REPEAT, GL_TEXTURE_2D);
 
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
@@ -249,7 +249,7 @@ int main()
         for (unsigned int i = 0; i < 10; i++) {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * (i+1);
+            float angle = 20.0f * (i + 1);
             /* if (i % 3 == 0) { */
             model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
             /* } else { */
