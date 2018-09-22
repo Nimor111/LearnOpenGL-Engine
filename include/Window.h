@@ -11,8 +11,6 @@
 
 class Window {
 private:
-    int _width;
-    int _height;
     std::string _title;
     GLFWwindow* _window;
 
@@ -26,9 +24,7 @@ public:
 };
 
 Window::Window(int width, int height, std::string title)
-    : _width(width)
-    , _height(height)
-    , _title(title)
+    : _title(title)
 {
     this->_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
