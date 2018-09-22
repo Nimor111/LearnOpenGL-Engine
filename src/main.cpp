@@ -199,12 +199,10 @@ void processInput(GLFWwindow* window, Context& context)
         } else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
             ourShader.use();
             GLfloat visibility = ourShader.getFloat("visibility");
-            std::cout << "New visibility value: " << visibility + 0.1 << std::endl;
             ourShader.setFloat("visibility", visibility + 0.1);
         } else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
             ourShader.use();
             GLfloat visibility = ourShader.getFloat("visibility");
-            std::cout << "New visibility value: " << visibility - 0.1 << std::endl;
             ourShader.setFloat("visibility", visibility - 0.1);
         }
     } else {
