@@ -1,6 +1,6 @@
 #version 330 core
 out vec4 FragColor;
-in vec3 ourColor;
+/* in vec3 ourColor; */
 in vec2 TexCoord;
 /* in vec3 vertexPosition; */
 //in vec4 vertexColor; // input from the vertex shader ( same name and type )
