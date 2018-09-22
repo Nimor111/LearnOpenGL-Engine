@@ -16,7 +16,7 @@
 #include <string>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow* window, Shader shader);
+void processInput(GLFWwindow* window, Context& context);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -123,12 +123,22 @@ int main()
     ourShader.setInt("ourTexture2", 1);
     ourShader.setFloat("visibility", 0.2);
 
+    Context context;
+
+    context.addShader(0, ourShader);
+
+    std::string containerName = std::string("container");
+    std::string awesomeFaceName = std::string("awesomeFace");
+
+    context.addTexture(containerName, container);
+    context.addTexture(awesomeFaceName, awesomeFace);
+
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window.getWindow())) {
         // input
         // -----
-        processInput(window.getWindow(), ourShader);
+        processInput(window.getWindow(), context);
 
         // render
         // ------
@@ -180,20 +190,26 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow* window, Shader ourShader)
+void processInput(GLFWwindow* window, Context& context)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, true);
-    } else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        ourShader.use();
-        GLfloat visibility = ourShader.getFloat("visibility");
-        std::cout << "New visibility value: " << visibility + 0.1 << std::endl;
-        ourShader.setFloat("visibility", visibility + 0.1);
-    } else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        ourShader.use();
-        GLfloat visibility = ourShader.getFloat("visibility");
-        std::cout << "New visibility value: " << visibility - 0.1 << std::endl;
-        ourShader.setFloat("visibility", visibility - 0.1);
+    std::optional<Shader> shader = context.getShader(0);
+    if (shader) {
+        Shader ourShader = *shader;
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+            glfwSetWindowShouldClose(window, true);
+        } else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+            ourShader.use();
+            GLfloat visibility = ourShader.getFloat("visibility");
+            std::cout << "New visibility value: " << visibility + 0.1 << std::endl;
+            ourShader.setFloat("visibility", visibility + 0.1);
+        } else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+            ourShader.use();
+            GLfloat visibility = ourShader.getFloat("visibility");
+            std::cout << "New visibility value: " << visibility - 0.1 << std::endl;
+            ourShader.setFloat("visibility", visibility - 0.1);
+        }
+    } else {
+        return;
     }
 }
 
