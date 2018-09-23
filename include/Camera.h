@@ -16,7 +16,7 @@ const float YAW = -90.0f;
 const float PITCH = 0.0f;
 const float SPEED = 2.5f;
 const float SENSITIVITY = 0.05f;
-const float ZOOM = 45.0f;
+const float ZOOM = 70.0f;
 
 class Camera {
 private:
@@ -128,14 +128,14 @@ public:
 
     void processMouseScroll(float yOffset)
     {
-        if (this->zoom >= 1.0f && this->zoom <= 45.0f) {
+        if (this->zoom >= 1.0f && this->zoom <= 70.0f) {
             this->zoom -= yOffset;
         }
         if (this->zoom <= 1.0f) {
             this->zoom = 1.0f;
         }
-        if (this->zoom >= 45.0f) {
-            this->zoom = 45.0f;
+        if (this->zoom >= 70.0f) {
+            this->zoom = 70.0f;
         }
     }
 };

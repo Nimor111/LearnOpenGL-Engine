@@ -11,13 +11,13 @@ public:
     GLuint id;
     GLenum dimension;
 
-    Texture(const GLchar*, bool, GLenum, GLenum);
+    Texture(const GLchar*, bool, GLenum, GLenum, GLenum);
 
     void activateTextureUnit(GLenum);
     void bindTexture();
 };
 
-Texture::Texture(const GLchar* texturePath, bool isAlpha, GLenum textureWrappingMode, GLenum dimension)
+Texture::Texture(const GLchar* texturePath, bool isAlpha, GLenum textureWrappingMode, GLenum dimension, GLenum wrappingMode)
 {
     int width, height, nrChannels;
 
@@ -32,8 +32,8 @@ Texture::Texture(const GLchar* texturePath, bool isAlpha, GLenum textureWrapping
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureWrappingMode);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureWrappingMode);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, wrappingMode);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, wrappingMode);
 
         GLenum imageDataType = isAlpha ? GL_RGBA : GL_RGB;
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, imageDataType, GL_UNSIGNED_BYTE, data);

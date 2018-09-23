@@ -179,10 +179,10 @@ int main()
     /* glEnableVertexAttribArray(2); */
 
     std::string containerPath = std::string("resources/images/container.jpg");
-    Texture container = Texture(containerPath.c_str(), false, GL_REPEAT, GL_TEXTURE_2D);
+    Texture container = Texture(containerPath.c_str(), false, GL_REPEAT, GL_TEXTURE_2D, GL_LINEAR);
 
     std::string awesomeFacePath = std::string("resources/images/awesomeface.png");
-    Texture awesomeFace = Texture(awesomeFacePath.c_str(), true, GL_REPEAT, GL_TEXTURE_2D);
+    Texture awesomeFace = Texture(awesomeFacePath.c_str(), true, GL_REPEAT, GL_TEXTURE_2D, GL_LINEAR);
 
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
@@ -333,9 +333,6 @@ void processInput(GLFWwindow* window, Context& context)
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
-        std::cout << "dt: " << deltaTime << std::endl;
-
-        float cameraSpeed = 2.5f * deltaTime;
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
