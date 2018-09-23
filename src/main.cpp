@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "../include/Camera.h"
 #include "../include/Context.h"
 #include "../include/Shader.h"
 #include "../include/Texture.h"
@@ -16,10 +17,31 @@
 #include <string>
 
 void processInput(GLFWwindow* window, Context& context);
+void mouseCallback(GLFWwindow* window, double xpos, double ypos);
+void scrollCallback(GLFWwindow* window, double xOffset, double yOffset);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+
+float fov = 45.0f;
+
+float mouseX = 400, mouseY = 300;
+
+float pitch = 0.0f, yaw = -90.0f;
+
+bool firstMouse = true;
+
+// camera vectors
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, -1.0f, 0.0f);
+
+// time between frames
+float deltaTime = 0.0f; // time between current frame and last frame
+float lastFrame = 0.0f; // time of last frame
+
+Camera camera = Camera(cameraPos, cameraUp);
 
 void translateVector()
 {
@@ -54,6 +76,11 @@ int main()
     // glfw window creation
     // --------------------
     Window window = Window(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL");
+
+    glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    glfwSetCursorPosCallback(window.getWindow(), mouseCallback);
+    glfwSetScrollCallback(window.getWindow(), scrollCallback);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -222,12 +249,18 @@ int main()
         /* model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)); */
 
         // view matrix -> transform to view coords a.k.a how the user/camera sees the scene
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f));
+        /* glm::mat4 view = glm::mat4(1.0f); */
+        /* view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f)); */
+
+        // rotate around the scene
+        /* float radius = 10.0f; */
+        /* float camX = sin(glfwGetTime()) * radius; */
+        /* float camZ = cos(glfwGetTime()) * radius; */
+        glm::mat4 view = camera.getViewMatrix();
 
         // perspective projection matrix
         glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(50.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(camera.zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
         /* GLuint modelLoc = glGetUniformLocation(ourShader.id, "model"); */
         /* glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model)); */
@@ -296,18 +329,62 @@ void processInput(GLFWwindow* window, Context& context)
     std::optional<Shader> shader = context.getShader(0);
     if (shader) {
         Shader ourShader = *shader;
+
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+        std::cout << "dt: " << deltaTime << std::endl;
+
+        float cameraSpeed = 2.5f * deltaTime;
+
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, true);
-        } else if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        }
+        if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
             ourShader.use();
             GLfloat visibility = ourShader.getFloat("visibility");
             ourShader.setFloat("visibility", visibility + 0.1);
-        } else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        }
+        if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
             ourShader.use();
             GLfloat visibility = ourShader.getFloat("visibility");
             ourShader.setFloat("visibility", visibility - 0.1);
         }
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+            camera.processKeyboard(FORWARD, deltaTime);
+        }
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+            camera.processKeyboard(BACKWARD, deltaTime);
+        }
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+            camera.processKeyboard(LEFT, deltaTime);
+        }
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+            camera.processKeyboard(RIGHT, deltaTime);
+        }
     } else {
         return;
     }
+}
+
+void mouseCallback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (firstMouse) {
+        mouseX = xpos;
+        mouseY = ypos;
+        firstMouse = false;
+    }
+
+    float xOffset = xpos - mouseX;
+    float yOffset = mouseY - ypos;
+
+    mouseX = xpos;
+    mouseY = ypos;
+
+    camera.processMouseMovement(xOffset, yOffset);
+}
+
+void scrollCallback(GLFWwindow* window, double xOffset, double yOffset)
+{
+    camera.processMouseScroll(yOffset);
 }
